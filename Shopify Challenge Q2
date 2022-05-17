@@ -1,0 +1,50 @@
+Shopify Challenge Q2
+
+1)
+SELECT 
+COUNT(*)
+FROM
+Orders
+inner join Shippers on Orders.ShipperID = Shippers.ShipperID
+where ShipperName = 'Speedy Express'
+
+2)
+SELECT LastName
+FROM
+(
+SELECT EmployeeID, LastName,
+Count(EmployeeID) as TotalCount
+FROM 
+(SELECT 
+o.OrderID,o.CustomerID,o.EmployeeID,e.EmployeeID,e.LastName
+FROM 
+Orders o
+inner join Employees e on o.EmployeeID=e.EmployeeID)
+Group By EmployeeID
+Order By TotalCount DESC
+LIMIT 1
+)
+
+3)
+SELECT ProductName
+FROM
+(
+SELECT ProductID, ProductName,
+Count(ProductID) as TotalCount
+FROM
+(
+SELECT od.OrderID, od.ProductID,
+o.CustomerID, o.OrderID, 
+c.CustomerID, c.Country,
+p.ProductID, p.ProductName
+FROM
+OrderDetails od
+inner join Orders o on o.OrderID=od.OrderID
+inner join Customers c on c.CustomerID=o.CustomerID
+inner join Products p on p.ProductID=od.ProductID
+where Country = "Germany"
+)
+Group By ProductID
+Order By TotalCount DESC
+)
+LIMIT 1
